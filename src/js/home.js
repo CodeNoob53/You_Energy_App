@@ -171,10 +171,8 @@ function setupFilterTabs() {
 
     document.querySelectorAll('.filter-tab').forEach(t => {
       t.classList.remove('active');
-      t.setAttribute('aria-selected', 'false');
     });
     btn.classList.add('active');
-    btn.setAttribute('aria-selected', 'true');
 
     // Update state
     appState.filter = btn.dataset.filter;
