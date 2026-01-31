@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Wellness & Fitness Tracker SPA</strong><br>
-  <sub>Курсова робота · Neoversity</sub>
+  <sub>Курсова робота · <a href="https://ref.goit.global/ac07ba13">Neoversity</a></sub>
 </p>
 
 <p align="center">
