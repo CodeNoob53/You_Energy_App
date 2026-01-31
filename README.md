@@ -10,12 +10,17 @@
 </p>
 
 <p align="center">
+  <br>
   <a href="https://codenoob53.github.io/You_Energy_App/">
-    <img src="https://img.shields.io/badge/Live_Demo-242424?style=flat-square" alt="Live Demo">
+    <img src="https://img.shields.io/badge/Live_Demo-242424?style=for-the-badge" alt="Live Demo">
   </a>
-  <img src="https://img.shields.io/badge/Vite_5.4-646CFF?style=flat-square" alt="Vite">
-  <img src="https://img.shields.io/badge/ES6+-F7DF1E?style=flat-square" alt="JavaScript">
-  <img src="https://img.shields.io/badge/MIT-green?style=flat-square" alt="License">
+  &nbsp;&nbsp;
+  <img src="https://img.shields.io/badge/Vite_5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
+  &nbsp;&nbsp;
+  <img src="https://img.shields.io/badge/ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+  &nbsp;&nbsp;
+  <img src="https://img.shields.io/badge/MIT-green?style=for-the-badge" alt="License">
+  <br><br>
 </p>
 
 ---
