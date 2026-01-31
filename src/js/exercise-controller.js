@@ -1,3 +1,6 @@
+// Exercise Modal Handler
+// Відповідає за обробку подій модалки вправи
+
 import { getExerciseById, updateRating } from './api.js';
 import {
   openModal,
@@ -7,26 +10,45 @@ import {
   hideRatingModal,
   getCurrentRating,
 } from './modal.js';
-import { addFavorite, removeFavorite, isFavorite } from './favorites.js';
+import { renderExerciseSkeleton } from './dom.js';
+import { addFavorite, removeFavorite, isFavorite } from './favorites-service.js';
 import { toast } from './toast.js';
 
-// Setup exercise modal with optional callbacks
-export function setupExerciseModal(exerciseId, options = {}) {
+// Open exercise modal with skeleton and fetch
+export async function openExerciseModal(exerciseId, options = {}) {
+  openModal('exercise-modal');
+  renderExerciseSkeleton();
+
+  try {
+    const exercise = await getExerciseById(exerciseId);
+    renderExerciseModal(exercise);
+    setupExerciseModalHandlers(exerciseId, options);
+  } catch (err) {
+    console.error(`Failed to fetch exercise details for ${exerciseId}:`, err);
+    closeModal('exercise-modal');
+  }
+}
+
+// Setup exercise modal event handlers
+function setupExerciseModalHandlers(exerciseId, options = {}) {
   const { onRemoveFavorite, isFavoritesPage = false } = options;
 
+  // Close button
   const closeBtn = document.getElementById('modal-close-btn');
   if (closeBtn) {
     closeBtn.onclick = () => closeModal('exercise-modal');
   }
 
+  // Rating button
   const giveRatingBtn = document.getElementById('give-rating-btn');
   if (giveRatingBtn) {
     giveRatingBtn.onclick = () => {
       showRatingModal();
-      setupRatingModal(exerciseId);
+      setupRatingModalHandlers(exerciseId);
     };
   }
 
+  // Favorites button
   const addToFavoritesBtn = document.getElementById('add-to-favorites-btn');
   if (addToFavoritesBtn) {
     const updateFavoriteButton = () => {
@@ -67,8 +89,8 @@ export function setupExerciseModal(exerciseId, options = {}) {
   }
 }
 
-// Setup rating modal
-export function setupRatingModal(exerciseId) {
+// Setup rating modal event handlers
+function setupRatingModalHandlers(exerciseId) {
   const closeBtn = document.getElementById('rating-modal-close-btn');
   if (closeBtn) {
     closeBtn.onclick = () => hideRatingModal();
@@ -97,39 +119,4 @@ export function setupRatingModal(exerciseId) {
       }
     };
   }
-}
-
-// Open exercise modal with skeleton and fetch
-export async function openExerciseModal(exerciseId, options = {}) {
-  openModal('exercise-modal');
-
-  // Render skeleton immediately
-  const { renderExerciseSkeleton } = await import('./dom.js');
-  renderExerciseSkeleton();
-
-  try {
-    const exercise = await getExerciseById(exerciseId);
-    renderExerciseModal(exercise);
-    setupExerciseModal(exerciseId, options);
-  } catch (err) {
-    console.error(`Failed to fetch exercise details for ${exerciseId}:`, err);
-    closeModal('exercise-modal');
-  }
-}
-
-// Create debounced resize listener
-export function createResizeListener(getLimit, onLimitChange) {
-  let timeoutId;
-  let currentLimit = getLimit();
-
-  return () => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      const newLimit = getLimit();
-      if (newLimit !== currentLimit) {
-        currentLimit = newLimit;
-        onLimitChange();
-      }
-    }, 300);
-  };
 }

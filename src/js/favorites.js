@@ -1,81 +1,26 @@
+// Favorites Page
+// Сторінка — "диригент", збирає все разом
+
 import { loadTemplate, replacePlaceholders } from './dom.js';
 import { initQuote } from './quote.js';
 import { renderPagination, setupPagination } from './pagination.js';
 import { openExerciseModal } from './exercise-controller.js';
+import { getFavorites, removeFavorite } from './favorites-service.js';
 
-const FAVORITES_KEY = 'favoriteExercises';
+// Re-export service functions for other modules
+export { getFavorites, addFavorite, removeFavorite, isFavorite, toggleFavorite } from './favorites-service.js';
 
-// Get all favorites from localStorage
-export function getFavorites() {
-  try {
-    const favorites = localStorage.getItem(FAVORITES_KEY);
-    return favorites ? JSON.parse(favorites) : [];
-  } catch (err) {
-    console.error('Failed to get favorites:', err);
-    return [];
-  }
-}
-
-// Add exercise to favorites
-export function addFavorite(exercise) {
-  try {
-    const favorites = getFavorites();
-
-    // Check if already exists
-    if (favorites.some(fav => fav._id === exercise._id)) {
-      return false;
-    }
-
-    favorites.push(exercise);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-    return true;
-  } catch (err) {
-    console.error('Failed to add favorite:', err);
-    return false;
-  }
-}
-
-// Remove exercise from favorites
-export function removeFavorite(exerciseId) {
-  try {
-    const favorites = getFavorites();
-    const filtered = favorites.filter(fav => fav._id !== exerciseId);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(filtered));
-    return true;
-  } catch (err) {
-    console.error('Failed to remove favorite:', err);
-    return false;
-  }
-}
-
-// Check if exercise is in favorites
-export function isFavorite(exerciseId) {
-  const favorites = getFavorites();
-  return favorites.some(fav => fav._id === exerciseId);
-}
-
-// Toggle favorite status
-export function toggleFavorite(exercise) {
-  if (isFavorite(exercise._id)) {
-    return removeFavorite(exercise._id);
-  } else {
-    return addFavorite(exercise);
-  }
-}
-
-// --- Favorites Page Logic ---
-
-const favoritesState = {
+// Page state
+const state = {
   page: 1,
-  perPage: 8,
 };
 
 // Get items per page based on screen width
 function getPerPage() {
   const width = window.innerWidth;
-  if (width >= 1440) return Infinity; // Desktop: no limit (scroll)
-  if (width >= 768) return 10; // Tablet
-  return 8; // Mobile
+  if (width >= 1440) return Infinity;
+  if (width >= 768) return 10;
+  return 8;
 }
 
 // Check if we should use pagination
@@ -84,10 +29,7 @@ function usePagination() {
 }
 
 // Render empty state
-async function renderEmptyState() {
-  const container = document.getElementById('favorites-container');
-  if (!container) return;
-
+async function renderEmptyState(container) {
   const template = await loadTemplate('favorites-empty');
   container.innerHTML = template;
 }
@@ -100,7 +42,7 @@ async function renderFavorites() {
   const allFavorites = getFavorites();
 
   if (allFavorites.length === 0) {
-    await renderEmptyState();
+    await renderEmptyState(container);
     renderPagination(1, 1, 'favorites-pagination');
     return;
   }
@@ -109,11 +51,11 @@ async function renderFavorites() {
   const shouldPaginate = usePagination();
   const totalPages = shouldPaginate ? Math.ceil(allFavorites.length / perPage) : 1;
 
-  if (favoritesState.page > totalPages) {
-    favoritesState.page = totalPages;
+  if (state.page > totalPages) {
+    state.page = totalPages;
   }
 
-  const startIndex = shouldPaginate ? (favoritesState.page - 1) * perPage : 0;
+  const startIndex = shouldPaginate ? (state.page - 1) * perPage : 0;
   const endIndex = shouldPaginate ? startIndex + perPage : allFavorites.length;
   const favorites = allFavorites.slice(startIndex, endIndex);
 
@@ -139,14 +81,14 @@ async function renderFavorites() {
   container.innerHTML = cardsHtml;
 
   if (shouldPaginate) {
-    renderPagination(favoritesState.page, totalPages, 'favorites-pagination');
+    renderPagination(state.page, totalPages, 'favorites-pagination');
   }
 }
 
 // Handle page change
 function handlePageChange(newPage) {
-  if (newPage && newPage !== favoritesState.page) {
-    favoritesState.page = newPage;
+  if (newPage && newPage !== state.page) {
+    state.page = newPage;
     renderFavorites();
   }
 }
@@ -162,32 +104,15 @@ function setupResizeListener() {
       const newPerPage = getPerPage();
       if (newPerPage !== currentPerPage) {
         currentPerPage = newPerPage;
-        favoritesState.page = 1;
+        state.page = 1;
         renderFavorites();
       }
     }, 300);
   });
 }
 
-// Initialize favorites page
-export async function initFavoritesPage() {
-  const favoritesPage = document.querySelector('.favorites-page');
-
-  try {
-    await initQuote();
-    await renderFavorites();
-    setupFavoritesEventDelegation();
-    setupPagination(handlePageChange, 'favorites-pagination');
-    setupResizeListener();
-  } catch (err) {
-    console.error('Error initializing favorites page:', err);
-  } finally {
-    if (favoritesPage) favoritesPage.classList.add('loaded');
-  }
-}
-
 // Setup event delegation for favorites container
-function setupFavoritesEventDelegation() {
+function setupEventHandlers() {
   const container = document.getElementById('favorites-container');
   if (!container) return;
 
@@ -195,6 +120,7 @@ function setupFavoritesEventDelegation() {
   container.dataset.listenerAttached = 'true';
 
   container.addEventListener('click', async (e) => {
+    // Delete button
     const deleteBtn = e.target.closest('.favorite-delete-btn');
     if (deleteBtn) {
       e.stopPropagation();
@@ -206,6 +132,7 @@ function setupFavoritesEventDelegation() {
       return;
     }
 
+    // Start button
     const startBtn = e.target.closest('.exercise-start-btn');
     if (startBtn) {
       e.stopPropagation();
@@ -218,4 +145,21 @@ function setupFavoritesEventDelegation() {
       });
     }
   });
+}
+
+// Initialize favorites page
+export async function initFavoritesPage() {
+  const favoritesPage = document.querySelector('.favorites-page');
+
+  try {
+    await initQuote();
+    await renderFavorites();
+    setupEventHandlers();
+    setupPagination(handlePageChange, 'favorites-pagination');
+    setupResizeListener();
+  } catch (err) {
+    console.error('Error initializing favorites page:', err);
+  } finally {
+    if (favoritesPage) favoritesPage.classList.add('loaded');
+  }
 }
