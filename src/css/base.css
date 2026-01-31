@@ -122,6 +122,16 @@ button {
   z-index: 99 !important;
 }
 
+.iziToast,
+.iziToast.iziToast-color-blue,
+.iziToast.iziToast-color-green,
+.iziToast.iziToast-color-orange,
+.iziToast.iziToast-color-red,
+.iziToast.iziToast-color-yellow,
+.iziToast.iziToast-theme-dark {
+  border-color: transparent !important;
+}
+
 /* Mobile: offset toast below fixed header */
 @media screen and (max-width: 767px) {
   .iziToast-wrapper-topRight,
