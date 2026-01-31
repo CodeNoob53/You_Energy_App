@@ -1,25 +1,230 @@
-# Your Energy - Vanilla JS Project
+<p align="center">
+  <img src="readme_header.avif" alt="Your Energy App Preview" width="100%">
+</p>
 
-Цей проєкт створено на основі [vanilla-app-template](https://github.com/goitacademy/vanilla-app-template).
-Застосунок дозволяє переглядати вправи та тренування.
+<h1 align="center">Your Energy</h1>
 
-## Технології
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Vite
+<p align="center">
+  <strong>Wellness & Fitness Tracker SPA</strong><br>
+  <sub>Курсова робота · Neoversity</sub>
+</p>
 
-## Запуск локально
-1. Встановіть залежності:
-   ```bash
-   npm install
-   ```
-2. Запустіть режим розробки:
-   ```bash
-   npm run dev
-   ```
-3. Відкрийте браузер за посиланням, яке з'явиться в терміналі (зазвичай `http://localhost:5173`).
+<p align="center">
+  <a href="https://codenoob53.github.io/You_Energy_App/">
+    <img src="https://img.shields.io/badge/Live_Demo-242424?style=flat-square" alt="Live Demo">
+  </a>
+  <img src="https://img.shields.io/badge/Vite_5.4-646CFF?style=flat-square" alt="Vite">
+  <img src="https://img.shields.io/badge/ES6+-F7DF1E?style=flat-square" alt="JavaScript">
+  <img src="https://img.shields.io/badge/MIT-green?style=flat-square" alt="License">
+</p>
 
-## Деплой
-Проєкт розгорнуто за допомогою GitHub Pages.
-[Посилання на живу сторінку](https://codenoob53.github.io/cusova/) (замініть на актуальне посилання)
+---
+
+## Overview
+
+**Your Energy** is a high-performance Single Page Application for exploring fitness exercises, managing favorites, and staying motivated. Built with vanilla JavaScript and optimized for speed.
+
+---
+
+## Features
+
+| Feature | Description |
+|:--------|:------------|
+| **Exercise Catalog** | Browse exercises by body parts, muscles, and equipment |
+| **Smart Search** | Real-time keyword filtering |
+| **Favorites** | Persistent storage via LocalStorage |
+| **Rating System** | Rate and review exercises |
+| **Daily Quote** | Motivational quotes from API |
+| **Responsive Design** | Mobile-first approach (320px - 1440px+) |
+
+---
+
+## Tech Stack
+
+| Category | Technologies |
+|:---------|:-------------|
+| **Build** | Vite 5.4, PostCSS |
+| **Core** | Vanilla JavaScript (ES6+ modules) |
+| **Styling** | CSS3, BEM methodology, CSS Custom Properties |
+| **HTTP** | Axios with interceptors |
+| **UI** | iziToast notifications |
+| **Fonts** | DM Sans (self-hosted WOFF2) |
+| **Images** | AVIF/WebP with `<picture>` fallbacks |
+
+---
+
+## Project Structure
+
+```
+You_Energy_App/
+├── src/
+│   ├── css/                    # Modular stylesheets
+│   │   ├── base.css            # Reset & base styles
+│   │   ├── variables.css       # CSS custom properties
+│   │   ├── layout.css          # Grid & container system
+│   │   ├── header.css          # Navigation styles
+│   │   ├── hero.css            # Hero section
+│   │   ├── categories.css      # Category cards
+│   │   ├── exercises.css       # Exercise cards
+│   │   ├── favorites.css       # Favorites page
+│   │   ├── filters.css         # Filter tabs
+│   │   ├── modal.css           # Modal dialogs
+│   │   ├── pagination.css      # Pagination component
+│   │   ├── quote.css           # Quote widget
+│   │   ├── sidebar.css         # Sidebar styles
+│   │   ├── skeleton.css        # Loading skeletons
+│   │   ├── responsive.css      # Media queries
+│   │   └── main.css            # Entry point (imports)
+│   │
+│   ├── js/                     # JavaScript modules
+│   │   ├── api.js              # Axios instance & API calls
+│   │   ├── dom.js              # DOM utilities & rendering
+│   │   ├── home.js             # Home page logic
+│   │   ├── favorites.js        # Favorites page logic
+│   │   ├── modal.js            # Modal management
+│   │   ├── nav.js              # Navigation & mobile menu
+│   │   ├── pagination.js       # Pagination logic
+│   │   ├── quote.js            # Daily quote fetching
+│   │   └── toast.js            # Notification wrapper
+│   │
+│   ├── partials/               # HTML components
+│   │   ├── header.html         # Site header
+│   │   ├── hero.html           # Hero section
+│   │   ├── filters.html        # Filter tabs
+│   │   ├── category-card.html  # Category card template
+│   │   ├── exercise-card.html  # Exercise card template
+│   │   ├── exercise-modal.html # Exercise detail modal
+│   │   ├── rating-modal.html   # Rating form modal
+│   │   ├── pagination.html     # Pagination controls
+│   │   ├── quote.html          # Quote widget
+│   │   ├── sidebar-image.html  # Sidebar images
+│   │   ├── favorites-empty.html# Empty state
+│   │   ├── footer.html         # Site footer
+│   │   └── icons.html          # SVG sprite
+│   │
+│   ├── img/                    # Optimized images
+│   │   ├── avif/               # AVIF format (primary)
+│   │   └── *.jpg               # JPEG fallbacks
+│   │
+│   ├── fonts/                  # Self-hosted fonts
+│   │   └── DMSans-*.woff2
+│   │
+│   ├── public/                 # Static assets
+│   │   └── favicon-*.png
+│   │
+│   ├── index.html              # Home page
+│   └── favorites.html          # Favorites page
+│
+├── dist/                       # Production build
+├── vite.config.js              # Vite configuration
+├── postcss.config.js           # PostCSS plugins
+└── package.json
+```
+
+---
+
+## Architecture Decisions
+
+### API Layer
+Centralized Axios instance with response interceptors for unified error handling and toast notifications.
+
+### Modular CSS
+Each component has its own stylesheet. Entry point `main.css` imports all modules in correct order. CSS Custom Properties ensure consistent theming.
+
+### SVG Sprite
+All icons combined into a single SVG sprite (`icons.html`) for reduced HTTP requests. Icons optimized with [SVG Viewer](https://www.svgviewer.dev/).
+
+### Image Optimization
+- Raster images optimized with [Squoosh](https://squoosh.app/)
+- AVIF as primary format with JPEG fallbacks
+- Retina support: `@2x` and `@3x` variants via `srcset`
+- Responsive `<picture>` elements with `sizes` attribute
+- Preloaded critical hero images
+
+### Skeleton Loaders
+CSS-based skeleton screens displayed during data fetching for improved perceived performance.
+
+### State Management
+- URL-based state for filters and pagination
+- LocalStorage for favorites persistence
+- No external state libraries
+
+---
+
+## Getting Started
+
+```bash
+# Clone
+git clone https://github.com/codenoob53/You_Energy_App.git
+cd You_Energy_App
+
+# Install
+npm install
+
+# Development
+npm run dev
+
+# Production build
+npm run build
+
+# Preview build
+npm run preview
+```
+
+---
+
+## API Endpoints
+
+| Endpoint | Method | Description |
+|:---------|:-------|:------------|
+| `/quote` | GET | Daily motivational quote |
+| `/filters` | GET | Categories (body parts, muscles, equipment) |
+| `/exercises` | GET | Exercise list with filters |
+| `/exercises/:id` | GET | Single exercise details |
+| `/exercises/:id/rating` | PATCH | Submit rating |
+| `/subscription` | POST | Email subscription |
+
+Base URL: `https://your-energy.b.goit.study/api`
+
+---
+
+## Performance (Lighthouse)
+
+<table width="100%">
+<tr>
+<td valign="top">
+
+**Mobile**
+| Metric | Score |
+|:-------|------:|
+| Performance | 98 |
+| Accessibility | 96 |
+| Best Practices | 100 |
+
+</td>
+<td width="50"></td>
+<td valign="top" align="right">
+
+**Desktop**
+| Metric | Score |
+|:-------|------:|
+| Performance | 100 |
+| Accessibility | 100 |
+| Best Practices | 100 |
+
+</td>
+</tr>
+</table>
+
+---
+
+## Author
+
+**Fedotov Oleksandr**
+[GitHub](https://github.com/codenoob53) · [Email](mailto:o.fedotov@student.neoversity.com.ua)
+
+---
+
+## License
+
+MIT
