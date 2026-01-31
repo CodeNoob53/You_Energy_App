@@ -1,36 +1,12 @@
-import {
-  getFilters,
-  getExercises,
-  getExerciseById,
-  updateRating,
-} from './api.js';
-import {
-  renderCategories,
-  renderExercises,
-  renderSkeleton,
-} from './dom.js';
+import { getFilters, getExercises } from './api.js';
+import { renderCategories, renderExercises, renderSkeleton } from './dom.js';
 import {
   renderPagination,
   setupPagination as setupPaginationListeners,
   scrollToTop,
 } from './pagination.js';
-import {
-  openModal,
-  closeModal,
-  renderExerciseModal,
-  showRatingModal,
-  hideRatingModal,
-  getCurrentRating,
-} from './modal.js';
-import { addFavorite, removeFavorite, isFavorite } from './favorites.js';
+import { openExerciseModal } from './exercise-controller.js';
 import { initQuote } from './quote.js';
-import { toast } from './toast.js';
-
-// Email validation helper
-function validateEmail(email) {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email);
-}
 
 // State object
 const appState = {
@@ -233,22 +209,7 @@ function setupExerciseCards() {
     if (startBtn) {
       const exerciseId = startBtn.dataset.id;
       if (!exerciseId) return;
-
-      // 1. Open modal immediately
-      openModal('exercise-modal');
-      
-      // 2. Render skeleton immediately to provide instant feedback (improves INP)
-      import('./dom.js').then(m => m.renderExerciseSkeleton());
-
-      try {
-        // 3. Fetch data in background
-        const exercise = await getExerciseById(exerciseId);
-        renderExerciseModal(exercise);
-        setupExerciseModal(exerciseId);
-      } catch (err) {
-        console.error(`Failed to fetch exercise details for ${exerciseId}:`, err);
-        closeModal('exercise-modal');
-      }
+      await openExerciseModal(exerciseId);
     }
   });
 }
@@ -349,84 +310,3 @@ function setupExerciseSearch() {
   });
 }
 
-// Setup exercise modal
-function setupExerciseModal(exerciseId) {
-  const closeBtn = document.getElementById('modal-close-btn');
-  if (closeBtn) {
-    closeBtn.onclick = () => closeModal('exercise-modal');
-  }
-
-  const giveRatingBtn = document.getElementById('give-rating-btn');
-  if (giveRatingBtn) {
-    giveRatingBtn.onclick = () => {
-      showRatingModal();
-      setupRatingModal(exerciseId);
-    };
-  }
-
-  const addToFavoritesBtn = document.getElementById('add-to-favorites-btn');
-  if (addToFavoritesBtn) {
-    const updateFavoriteButton = () => {
-      if (isFavorite(exerciseId)) {
-        addToFavoritesBtn.innerHTML = `
-          <span class="btn-text">Remove from favorites</span>
-          <svg width="20" height="20" aria-hidden="true">
-            <use href="#icon-trash"></use>
-          </svg>
-        `;
-      } else {
-        addToFavoritesBtn.innerHTML = `
-          <span class="btn-text">Add to favorites</span>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M10 3.5C10 3.5 6.5 1 3.5 3.5C0.5 6 2 10 10 16.5C18 10 19.5 6 16.5 3.5C13.5 1 10 3.5 10 3.5Z" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
-        `;
-      }
-    };
-
-    addToFavoritesBtn.onclick = async () => {
-      if (isFavorite(exerciseId)) {
-        removeFavorite(exerciseId);
-      } else {
-        const exercise = await getExerciseById(exerciseId);
-        addFavorite(exercise);
-      }
-      updateFavoriteButton();
-    };
-
-    updateFavoriteButton();
-  }
-}
-
-// Setup rating modal
-function setupRatingModal(exerciseId) {
-  const closeBtn = document.getElementById('rating-modal-close-btn');
-  if (closeBtn) {
-    closeBtn.onclick = () => hideRatingModal();
-  }
-
-  const ratingForm = document.getElementById('rating-form');
-  if (ratingForm) {
-    ratingForm.onsubmit = async e => {
-      e.preventDefault();
-
-      // Native validation handles required fields
-      if (!ratingForm.checkValidity()) {
-        ratingForm.reportValidity();
-        return;
-      }
-
-      const rating = getCurrentRating();
-      const email = ratingForm.email.value.trim();
-      const review = ratingForm.review?.value.trim() || '';
-
-      try {
-        await updateRating(exerciseId, rating, email, review);
-        hideRatingModal();
-        toast.success('Rating submitted successfully!');
-      } catch (err) {
-        console.error('Failed to submit rating:', err);
-      }
-    };
-  }
-}
