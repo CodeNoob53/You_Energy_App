@@ -84,12 +84,14 @@ You_Energy_App/
 │   ├── js/                     # JavaScript modules
 │   │   ├── api.js              # Axios instance & API calls
 │   │   ├── dom.js              # DOM utilities & rendering
-│   │   ├── home.js             # Home page logic
-│   │   ├── favorites.js        # Favorites page logic
-│   │   ├── modal.js            # Modal management
+│   │   ├── exercise-controller.js # Exercise modal & rating orchestration
+│   │   ├── favorites-service.js # Favorites business logic (LocalStorage)
+│   │   ├── favorites.js        # Favorites page entry point
+│   │   ├── home.js             # Home page entry point
+│   │   ├── modal.js            # Base modal management
 │   │   ├── nav.js              # Navigation & mobile menu
 │   │   ├── pagination.js       # Pagination logic
-│   │   ├── quote.js            # Daily quote fetching
+│   │   ├── quote.js            # Daily quote logic
 │   │   └── toast.js            # Notification wrapper
 │   │
 │   ├── partials/               # HTML components
@@ -129,6 +131,12 @@ You_Energy_App/
 ---
 
 ## Architecture Decisions
+
+### Layered Architecture
+JS logic is separated into specialized layers to follow the principle of single responsibility:
+- **Services**: Pure data logic (e.g., `favorites-service.js` for LocalStorage) independent of the DOM.
+- **Controllers**: Orchestration of events and UI flows (e.g., `exercise-controller.js` for complex modal interactions).
+- **Page Modules**: Entry points that wire up specific page functionality.
 
 ### API Layer
 Centralized Axios instance with response interceptors for unified error handling and toast notifications.
