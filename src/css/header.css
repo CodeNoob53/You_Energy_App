@@ -157,11 +157,7 @@
   z-index: 999;
   overflow-y: auto;
   transform: translateX(100%);
-  transition:
-    transform 300ms ease-in-out,
-    overlay 300ms ease-in-out,
-    display 300ms ease-in-out;
-  transition-behavior: allow-discrete;
+  transition: transform 300ms ease-in-out;
 }
 
 .mobile-menu[open] {
@@ -172,11 +168,7 @@
 
 .mobile-menu::backdrop {
   background-color: rgba(0, 0, 0, 0);
-  transition:
-    background-color 300ms ease-in-out,
-    overlay 300ms ease-in-out,
-    display 300ms ease-in-out;
-  transition-behavior: allow-discrete;
+  transition: background-color 300ms ease-in-out;
 }
 
 .mobile-menu[open]::backdrop {
