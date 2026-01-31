@@ -35,7 +35,7 @@
 | **Favorites** | Persistent storage via LocalStorage |
 | **Rating System** | Rate and review exercises |
 | **Daily Quote** | Motivational quotes from API |
-| **Responsive Design** | Mobile-first approach (320px - 1440px+) |
+| **Adaptive Design** | Partial responsive layout (320px, 768px, 1440px) |
 
 ---
 
