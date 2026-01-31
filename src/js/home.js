@@ -234,13 +234,20 @@ function setupExerciseCards() {
       const exerciseId = startBtn.dataset.id;
       if (!exerciseId) return;
 
+      // 1. Open modal immediately
+      openModal('exercise-modal');
+      
+      // 2. Render skeleton immediately to provide instant feedback (improves INP)
+      import('./dom.js').then(m => m.renderExerciseSkeleton());
+
       try {
+        // 3. Fetch data in background
         const exercise = await getExerciseById(exerciseId);
         renderExerciseModal(exercise);
-        openModal('exercise-modal');
         setupExerciseModal(exerciseId);
       } catch (err) {
         console.error(`Failed to fetch exercise details for ${exerciseId}:`, err);
+        closeModal('exercise-modal');
       }
     }
   });

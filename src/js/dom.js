@@ -144,3 +144,37 @@ export const renderSkeleton = (view, containerId, count = 9) => {
     container.innerHTML = skeletonHtml;
   }
 };
+
+/**
+ * Render skeleton for exercise modal
+ */
+export const renderExerciseSkeleton = () => {
+  const gifElement = document.getElementById('modal-exercise-gif');
+  const titleElement = document.getElementById('modal-exercise-title');
+  const ratingElement = document.getElementById('modal-exercise-rating');
+  const targetElement = document.getElementById('modal-target');
+  const bodyPartElement = document.getElementById('modal-bodypart');
+  const equipmentElement = document.getElementById('modal-equipment');
+  const popularElement = document.getElementById('modal-popular');
+  const caloriesElement = document.getElementById('modal-calories');
+  const descriptionElement = document.getElementById('modal-description');
+
+  if (gifElement) gifElement.src = 'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%3E%3C/svg%3E';
+  if (titleElement) titleElement.textContent = 'Loading...';
+  if (ratingElement) ratingElement.innerHTML = '<div class="skeleton-shimmer" style="width: 100px; height: 20px; border-radius: 4px;"></div>';
+  
+  const skeletonText = '<span class="skeleton-shimmer" style="display: inline-block; width: 60px; height: 14px; border-radius: 2px;"></span>';
+  if (targetElement) targetElement.innerHTML = skeletonText;
+  if (bodyPartElement) bodyPartElement.innerHTML = skeletonText;
+  if (equipmentElement) equipmentElement.innerHTML = skeletonText;
+  if (popularElement) popularElement.innerHTML = skeletonText;
+  if (caloriesElement) caloriesElement.innerHTML = skeletonText;
+  
+  if (descriptionElement) {
+    descriptionElement.innerHTML = `
+      <div class="skeleton-shimmer" style="width: 100%; height: 14px; border-radius: 2px; margin-bottom: 8px;"></div>
+      <div class="skeleton-shimmer" style="width: 90%; height: 14px; border-radius: 2px; margin-bottom: 8px;"></div>
+      <div class="skeleton-shimmer" style="width: 40%; height: 14px; border-radius: 2px;"></div>
+    `;
+  }
+};
