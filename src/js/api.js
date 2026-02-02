@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { toast } from './toast.js';
-
-const BASE_URL = 'https://your-energy.b.goit.study/api';
+import { API_BASE_URL, LIMITS } from './constants.js';
 
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: API_BASE_URL,
 });
 
 // Error messages mapping
@@ -46,7 +45,7 @@ export const getQuote = async () => {
   return data;
 };
 
-export const getFilters = async ({ filter, page = 1, limit = 12 }) => {
+export const getFilters = async ({ filter, page = 1, limit = LIMITS.DEFAULT }) => {
   const { data } = await api.get('/filters', {
     params: { filter, page, limit },
   });
@@ -59,7 +58,7 @@ export const getExercises = async ({
   equipment,
   keyword,
   page = 1,
-  limit = 10,
+  limit = LIMITS.EXERCISES_TABLET,
 }) => {
   const params = { page, limit };
   if (bodypart) params.bodypart = bodypart;

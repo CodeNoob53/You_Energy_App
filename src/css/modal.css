@@ -37,7 +37,7 @@ body:has(dialog[open]) {
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 10;
+  z-index: var(--z-modal-content);
   color: var(--color-light);
   display: flex;
   justify-content: center;
@@ -252,10 +252,10 @@ body:has(dialog[open]) {
 .rating-modal-title {
   font-family: var(--font-main);
   font-weight: 400;
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--fs-12);
+  line-height: var(--lh-18);
   letter-spacing: 0px;
-  color: rgba(244, 244, 244, 0.4);
+  color: var(--color-light-40);
   text-align: left;
   margin-bottom: var(--gap-8);
   width: 100%;
@@ -327,7 +327,7 @@ body:has(dialog[open]) {
   font-weight: 500;
   font-size: var(--fs-16);
   line-height: 1.5;
-  color: rgba(244, 244, 244, 1);
+  color: var(--color-light);
   margin: 0;
 }
 

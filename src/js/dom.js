@@ -162,14 +162,14 @@ export const renderExerciseSkeleton = () => {
   if (gifElement) gifElement.src = 'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%3E%3C/svg%3E';
   if (titleElement) titleElement.textContent = 'Loading...';
   if (ratingElement) ratingElement.innerHTML = '<div class="skeleton-shimmer" style="width: 100px; height: 20px; border-radius: 4px;"></div>';
-  
+
   const skeletonText = '<span class="skeleton-shimmer" style="display: inline-block; width: 60px; height: 14px; border-radius: 2px;"></span>';
   if (targetElement) targetElement.innerHTML = skeletonText;
   if (bodyPartElement) bodyPartElement.innerHTML = skeletonText;
   if (equipmentElement) equipmentElement.innerHTML = skeletonText;
   if (popularElement) popularElement.innerHTML = skeletonText;
   if (caloriesElement) caloriesElement.innerHTML = skeletonText;
-  
+
   if (descriptionElement) {
     descriptionElement.innerHTML = `
       <div class="skeleton-shimmer" style="width: 100%; height: 14px; border-radius: 2px; margin-bottom: 8px;"></div>
@@ -178,3 +178,26 @@ export const renderExerciseSkeleton = () => {
     `;
   }
 };
+
+/**
+ * Defers non-critical tasks until after page load
+ * Uses requestIdleCallback when available, falls back to setTimeout
+ * @param {Function} task - Async or sync function to execute
+ * @param {Object} options - Configuration options
+ * @param {number} options.timeout - Maximum wait time in ms (default: 2000)
+ */
+export function runAfterLoad(task, { timeout = 2000 } = {}) {
+  const run = () => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => task(), { timeout });
+    } else {
+      setTimeout(() => task(), 1);
+    }
+  };
+
+  if (document.readyState === 'complete') {
+    run();
+  } else {
+    window.addEventListener('load', run, { once: true });
+  }
+}

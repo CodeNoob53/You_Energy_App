@@ -29,27 +29,27 @@
 }
 
 .footer-socials .social-link {
-  border: 1px solid rgb(244, 244, 244, 0.1);
+  border: 1px solid var(--color-light-20);
 }
 
 .footer-socials .social-link:hover {
-  background-color: rgb(244, 244, 244, 1);
-  border-color: rgb(230, 230, 230, 1);
+  background-color: var(--color-light);
+  border-color: var(--color-separator);
 }
 
 .footer-socials .social-icon {
-  color: rgb(244, 244, 244, 0.8);
+  color: var(--color-light-60);
 }
 
 .footer-socials .social-link:hover .social-icon {
-  color: rgb(36, 36, 36, 0.8);
+  color: var(--color-dark-80);
 }
 
 .footer-slogan {
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: var(--fs-38);
   font-weight: 400;
-  line-height: 44px;
+  line-height: var(--lh-44);
   letter-spacing: -1.12px;
   color: var(--color-light);
   max-width: 596px;
@@ -63,9 +63,9 @@
 }
 
 .subscription-title {
-  font-size: 14px;
+  font-size: var(--fs-14);
   font-weight: 400;
-  line-height: 18px;
+  line-height: var(--lh-18);
   color: var(--color-light);
 }
 
@@ -77,7 +77,7 @@
 
 .subscription-input {
   background: transparent;
-  border: 1px solid rgb(244, 244, 244, 0.3);
+  border: 1px solid var(--color-light-30);
   border-radius: 30px;
   padding: 14px 24px;
   color: var(--color-light-60);

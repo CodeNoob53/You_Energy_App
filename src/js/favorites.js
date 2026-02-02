@@ -1,11 +1,12 @@
 // Favorites Page
 // Сторінка — "диригент", збирає все разом
 
-import { loadTemplate, replacePlaceholders } from './dom.js';
+import { loadTemplate, replacePlaceholders, runAfterLoad } from './dom.js';
 import { initQuote } from './quote.js';
 import { renderPagination, setupPagination } from './pagination.js';
 import { openExerciseModal } from './exercise-controller.js';
 import { getFavorites, removeFavorite } from './favorites-service.js';
+import { BREAKPOINTS, LIMITS, DEBOUNCE_MS } from './constants.js';
 
 // Re-export service functions for other modules
 export { getFavorites, addFavorite, removeFavorite, isFavorite, toggleFavorite } from './favorites-service.js';
@@ -18,14 +19,14 @@ const state = {
 // Get items per page based on screen width
 function getPerPage() {
   const width = window.innerWidth;
-  if (width >= 1440) return Infinity;
-  if (width >= 768) return 10;
-  return 8;
+  if (width >= BREAKPOINTS.DESKTOP) return Infinity;
+  if (width >= BREAKPOINTS.TABLET) return LIMITS.EXERCISES_TABLET;
+  return LIMITS.EXERCISES_MOBILE;
 }
 
 // Check if we should use pagination
 function usePagination() {
-  return window.innerWidth < 1440;
+  return window.innerWidth < BREAKPOINTS.DESKTOP;
 }
 
 // Render empty state
@@ -107,7 +108,7 @@ function setupResizeListener() {
         state.page = 1;
         renderFavorites();
       }
-    }, 300);
+    }, DEBOUNCE_MS);
   });
 }
 
@@ -148,18 +149,26 @@ function setupEventHandlers() {
 }
 
 // Initialize favorites page
-export async function initFavoritesPage() {
+export function initFavoritesPage() {
   const favoritesPage = document.querySelector('.favorites-page');
 
-  try {
-    await initQuote();
-    await renderFavorites();
-    setupEventHandlers();
-    setupPagination(handlePageChange, 'favorites-pagination');
-    setupResizeListener();
-  } catch (err) {
-    console.error('Error initializing favorites page:', err);
-  } finally {
-    if (favoritesPage) favoritesPage.classList.add('loaded');
+  // Setup event listeners immediately (sync - critical for interactivity)
+  setupEventHandlers();
+  setupPagination(handlePageChange, 'favorites-pagination');
+  setupResizeListener();
+
+  // Mark as loaded immediately
+  if (favoritesPage) {
+    favoritesPage.classList.add('loaded');
   }
+
+  // Defer async operations (non-critical for initial render)
+  runAfterLoad(async () => {
+    try {
+      await initQuote();
+      await renderFavorites();
+    } catch (err) {
+      console.error('Error initializing favorites page:', err);
+    }
+  });
 }

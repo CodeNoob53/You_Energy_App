@@ -5,7 +5,7 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-sticky);
   background-color: var(--color-light);
   border-bottom: 1px solid transparent;
   transition: var(--transition);
@@ -99,7 +99,7 @@
   padding: var(--gap-8);
   width: 44px;
   height: 44px;
-  border: 1px solid rgb(36, 36, 36, 0.1);
+  border: 1px solid var(--color-dark-10);
   border-radius: var(--radius-10);
   transition: var(--transition);
   flex: none;
@@ -107,18 +107,18 @@
 }
 
 .social-link:hover {
-  background-color: rgb(36, 36, 36, 0.8);
+  background-color: var(--color-dark-80);
 }
 
 .social-icon {
   width: 28px;
   height: 28px;
-  color: rgb(36, 36, 36, 0.8);
+  color: var(--color-dark-80);
   transition: var(--transition);
 }
 
 .social-link:hover .social-icon {
-  color: rgb(244, 244, 244, 1);
+  color: var(--color-light);
 }
 
 /* ==========================================================================
@@ -154,7 +154,7 @@
   padding: 0;
   margin: 0;
   margin-left: auto;
-  z-index: 999;
+  z-index: var(--z-modal);
   overflow-y: auto;
   transform: translateX(100%);
   transition: transform 300ms ease-in-out;

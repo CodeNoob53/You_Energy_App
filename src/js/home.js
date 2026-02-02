@@ -1,5 +1,5 @@
 import { getFilters, getExercises } from './api.js';
-import { renderCategories, renderExercises, renderSkeleton } from './dom.js';
+import { renderCategories, renderExercises, renderSkeleton, runAfterLoad } from './dom.js';
 import {
   renderPagination,
   setupPagination as setupPaginationListeners,
@@ -7,6 +7,7 @@ import {
 } from './pagination.js';
 import { openExerciseModal } from './exercise-controller.js';
 import { initQuote } from './quote.js';
+import { BREAKPOINTS, LIMITS, DEBOUNCE_MS } from './constants.js';
 
 // State object
 const appState = {
@@ -23,46 +24,40 @@ const getLimit = () => {
   const width = window.innerWidth;
 
   if (appState.view === 'categories') {
-    // Categories: mobile 9, tablet/desktop 12
-    return width < 768 ? 9 : 12;
+    return width < BREAKPOINTS.TABLET ? LIMITS.CATEGORIES_MOBILE : LIMITS.CATEGORIES_DESKTOP;
   } else {
-    // Exercises: mobile 8, tablet 10 (desktop has no pagination limit)
-    return width < 768 ? 8 : 10;
+    return width < BREAKPOINTS.TABLET ? LIMITS.EXERCISES_MOBILE : LIMITS.EXERCISES_TABLET;
   }
 };
 
 // Initialize home page
-export async function initHomePage() {
+export function initHomePage() {
   const mainContent = document.querySelector('.main-content');
 
-  // Render initial skeletons immediately
+  // Render initial skeletons immediately (sync - critical for perceived performance)
   const initialLimit = getLimit();
   renderSkeleton(appState.view, 'exercises-container', initialLimit);
 
-  try {
-    // 1. Initialize Quote
-    // Note: This is async and might fetch from API, so skeletal loading for exercises 
-    // should already be visible by now.
-    await initQuote();
-
-    // 2. Initial Categories
-    await fetchAndRender();
-
-  } catch (err) {
-    console.error('Error initializing home page:', err);
-  } finally {
-    if (mainContent) {
-      mainContent.classList.add('loaded');
-    }
-  }
-
-  // Setup event listeners
+  // Setup event listeners immediately (sync - critical for interactivity)
   setupFilterTabs();
   setupExerciseCards();
   setupPaginationListeners(handlePageChange);
   setupResizeListener();
 
-  // Note: setupExerciseSearch is called dynamically when entering exercises view
+  // Mark as loaded immediately
+  if (mainContent) {
+    mainContent.classList.add('loaded');
+  }
+
+  // Defer async operations (non-critical for initial render)
+  runAfterLoad(async () => {
+    try {
+      await initQuote();
+      await fetchAndRender();
+    } catch (err) {
+      console.error('Error initializing home page:', err);
+    }
+  });
 }
 
 // Setup window resize listener to update limit and re-fetch if needed
@@ -76,10 +71,10 @@ function setupResizeListener() {
       const newLimit = getLimit();
       if (newLimit !== currentLimit) {
         currentLimit = newLimit;
-        appState.page = 1; // Reset to first page when limit changes to avoid empty pages
+        appState.page = 1;
         fetchAndRender();
       }
-    }, 300);
+    }, DEBOUNCE_MS);
   });
 }
 

@@ -1,7 +1,6 @@
 import { getQuote } from './api.js';
 import { renderQuote } from './dom.js';
-
-const QUOTE_STORAGE_KEY = 'quote-of-the-day';
+import { STORAGE_KEYS } from './constants.js';
 
 /**
  * Get today's date in YYYY-MM-DD format
@@ -16,7 +15,7 @@ function getTodayDate() {
  */
 function getCachedQuote() {
   try {
-    const cached = localStorage.getItem(QUOTE_STORAGE_KEY);
+    const cached = localStorage.getItem(STORAGE_KEYS.QUOTE);
     if (!cached) return null;
 
     const { quote, author, date } = JSON.parse(cached);
@@ -26,7 +25,7 @@ function getCachedQuote() {
       return { quote, author };
     }
 
-    localStorage.removeItem(QUOTE_STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEYS.QUOTE);
     return null;
   } catch (error) {
     console.error('Error reading cached quote:', error);
@@ -44,7 +43,7 @@ function cacheQuote(quote, author) {
       author,
       date: getTodayDate(),
     };
-    localStorage.setItem(QUOTE_STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(STORAGE_KEYS.QUOTE, JSON.stringify(data));
   } catch (error) {
     console.error('Error caching quote:', error);
   }

@@ -1,12 +1,12 @@
 // Favorites Service - localStorage operations
 // НЕ працює з DOM, тільки зберігає/читає дані
 
-const FAVORITES_KEY = 'favoriteExercises';
+import { STORAGE_KEYS } from './constants.js';
 
 // Get all favorites from localStorage
 export function getFavorites() {
   try {
-    const favorites = localStorage.getItem(FAVORITES_KEY);
+    const favorites = localStorage.getItem(STORAGE_KEYS.FAVORITES);
     return favorites ? JSON.parse(favorites) : [];
   } catch (err) {
     console.error('Failed to get favorites:', err);
@@ -24,7 +24,7 @@ export function addFavorite(exercise) {
     }
 
     favorites.push(exercise);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(favorites));
     return true;
   } catch (err) {
     console.error('Failed to add favorite:', err);
@@ -37,7 +37,7 @@ export function removeFavorite(exerciseId) {
   try {
     const favorites = getFavorites();
     const filtered = favorites.filter(fav => fav._id !== exerciseId);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(filtered));
+    localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(filtered));
     return true;
   } catch (err) {
     console.error('Failed to remove favorite:', err);

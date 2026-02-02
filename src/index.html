@@ -4,21 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Energy</title>
-        <!-- DNS prefetch for API -->
+        <!-- DNS prefetch and preconnect for API -->
     <link rel="dns-prefetch" href="https://your-energy.b.goit.study">
-    <link
-      rel="preconnect"
-      href="https://your-energy.b.goit.study"
-      crossorigin
-    >
+    <link rel="preconnect" href="https://your-energy.b.goit.study" crossorigin>
+
+    <!-- Preconnect for images CDN -->
+    <link rel="dns-prefetch" href="https://ftp.goit.study">
+    <link rel="preconnect" href="https://ftp.goit.study" crossorigin>
 
     <!-- Preload critical fonts -->
     <link rel="preload" href="./fonts/DMSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="./fonts/DMSans-Medium.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="./fonts/DMSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 
-
-    <link rel="stylesheet" href="./css/main.css">
+    <!-- Async CSS loading: preload + onload pattern -->
+    <link rel="preload" href="./css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./css/main.css"></noscript>
     <script type="module" src="./main.js"></script>
 
     <!-- Favicons -->
