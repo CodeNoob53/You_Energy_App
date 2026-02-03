@@ -122,7 +122,7 @@
     display: grid;
     grid-template-columns: 400px 1fr;
     gap: 32px 16px;
-    min-height: auto;
+    min-height: 249px; /* Reserve space for tablet layout */
   }
 
   .sidebar-image-card {
@@ -288,11 +288,13 @@
     flex-direction: column;
     gap: var(--gap-32);
     max-width: 444px;
+    min-height: 827px; /* Reserve space for desktop layout (3 cards + gaps) */
   }
 
   .categories-grid {
     grid-template-columns: repeat(3, 290px);
     gap: 32px 15px;
+    min-height: 530px; /* Reserve space for 2 rows on desktop */
   }
 
   .category-card,

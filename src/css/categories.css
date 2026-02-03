@@ -4,8 +4,8 @@
   grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
   gap: 32px 15px;
   width: 100%;
-  justify-content: center; /* Centering the grid if it's smaller than container */
-  min-height: 0; /* Reserve space to prevent CLS */
+  justify-content: center;
+  min-height: 482px; /* Reserve space for 2 rows of cards to prevent CLS */
   list-style: none;
   padding: 0;
   margin: 0;
