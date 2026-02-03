@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { toast } from './toast.js';
+import { notify } from './notify.js';
 import { API_BASE_URL, LIMITS } from './constants.js';
 
 const api = axios.create({
@@ -26,7 +26,7 @@ api.interceptors.response.use(
       const message = isOffline
         ? 'No internet connection. Please check your network.'
         : 'Unable to connect to server. Please try again later.';
-      toast.error(message);
+      notify.error(message);
       return Promise.reject(error);
     }
 
@@ -34,7 +34,7 @@ api.interceptors.response.use(
     const serverMessage = error.response.data?.message;
     const message = serverMessage || errorMessages[status] || errorMessages.default;
 
-    toast.error(message);
+    notify.error(message);
 
     return Promise.reject(error);
   }

@@ -12,7 +12,7 @@ import {
 } from './modal.js';
 import { renderExerciseSkeleton } from './dom.js';
 import { addFavorite, removeFavorite, isFavorite } from './favorites-service.js';
-import { toast } from './toast.js';
+import { notify } from './notify.js';
 
 // Open exercise modal with skeleton and fetch
 export async function openExerciseModal(exerciseId, options = {}) {
@@ -69,7 +69,7 @@ function setupExerciseModalHandlers(exerciseId, options = {}) {
       }
     };
 
-    addToFavoritesBtn.onclick = async () => {
+    addToFavoritesBtn.onclick = () => {
       if (isFavorite(exerciseId)) {
         removeFavorite(exerciseId);
         if (isFavoritesPage) {
@@ -79,8 +79,7 @@ function setupExerciseModalHandlers(exerciseId, options = {}) {
           updateFavoriteButton();
         }
       } else {
-        const exercise = await getExerciseById(exerciseId);
-        addFavorite(exercise);
+        addFavorite(exerciseId);
         updateFavoriteButton();
       }
     };
@@ -113,8 +112,13 @@ function setupRatingModalHandlers(exerciseId) {
       try {
         await updateRating(exerciseId, rating, email, review);
         hideRatingModal();
-        toast.success('Rating submitted successfully!');
+        notify.success('Rating submitted successfully!');
       } catch (err) {
+        if (err.response?.status === 409) {
+          notify.error('You have already rated this exercise with this email.');
+        } else {
+          notify.error('Failed to submit rating. Please try again.');
+        }
         console.error('Failed to submit rating:', err);
       }
     };

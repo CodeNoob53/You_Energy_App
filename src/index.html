@@ -33,31 +33,30 @@
     <load src="partials/header.html" />
 
     <main class="main">
-
-      <div class="wrapper">
         <load src="partials/hero.html" />
-  
+
         <load src="partials/filters.html" />
-  
+
         <div class="main-content">
-          <section class="content-area" aria-labelledby="exercises-heading">
-            <h2 id="exercises-heading" class="visually-hidden">Exercises List</h2>
-            <ul
-              id="exercises-container"
-              class="categories-grid"
-              aria-live="polite"
-              aria-busy="false"
-            ></ul>
-            <nav id="pagination-container" aria-label="Pagination"></nav>
-          </section>
+          <div class="container">
+            <section class="content-area" aria-labelledby="exercises-heading">
+              <h2 id="exercises-heading" class="visually-hidden">Exercises List</h2>
+              <ul
+                id="exercises-container"
+                class="categories-grid"
+                aria-live="polite"
+                aria-busy="false"
+              ></ul>
+              <nav id="pagination-container" aria-label="Pagination"></nav>
+            </section>
   
-          <section class="sidebar" aria-label="Additional information">
-            <load src="partials/quote.html" />
-            <load src="partials/sidebar-image.html" />
-            <load src="partials/info-card.html" />
-          </section>
+            <section class="sidebar" aria-label="Additional information">
+              <load src="partials/quote.html" />
+              <load src="partials/sidebar-image.html" />
+              <load src="partials/info-card.html" />
+            </section>
+          </div>
         </div>
-      </div>
     </main>
 
     <load src="partials/footer.html" />

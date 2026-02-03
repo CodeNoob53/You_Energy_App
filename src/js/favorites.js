@@ -5,15 +5,17 @@ import { loadTemplate, replacePlaceholders, runAfterLoad } from './dom.js';
 import { initQuote } from './quote.js';
 import { renderPagination, setupPagination } from './pagination.js';
 import { openExerciseModal } from './exercise-controller.js';
-import { getFavorites, removeFavorite } from './favorites-service.js';
+import { getFavoriteIds, removeFavorite } from './favorites-service.js';
+import { getExerciseById } from './api.js';
 import { BREAKPOINTS, LIMITS, DEBOUNCE_MS } from './constants.js';
 
 // Re-export service functions for other modules
-export { getFavorites, addFavorite, removeFavorite, isFavorite, toggleFavorite } from './favorites-service.js';
+export { getFavoriteIds, addFavorite, removeFavorite, isFavorite, toggleFavorite } from './favorites-service.js';
 
 // Page state
 const state = {
   page: 1,
+  exercises: [], // Cached exercises data from API
 };
 
 // Get items per page based on screen width
@@ -35,30 +37,57 @@ async function renderEmptyState(container) {
   container.innerHTML = template;
 }
 
+// Fetch exercises data from API
+async function fetchFavoritesData() {
+  const favoriteIds = getFavoriteIds();
+
+  if (favoriteIds.length === 0) {
+    state.exercises = [];
+    return;
+  }
+
+  // Fetch all exercises in parallel
+  const exercisePromises = favoriteIds.map(async (id) => {
+    try {
+      return await getExerciseById(id);
+    } catch (err) {
+      console.error(`Failed to fetch exercise ${id}:`, err);
+      // Remove invalid ID from favorites
+      removeFavorite(id);
+      return null;
+    }
+  });
+
+  const exercises = await Promise.all(exercisePromises);
+  state.exercises = exercises.filter(Boolean); // Remove nulls
+}
+
 // Render favorites list
 async function renderFavorites() {
   const container = document.getElementById('favorites-container');
   if (!container) return;
 
-  const allFavorites = getFavorites();
+  const paginationContainer = document.getElementById('favorites-pagination');
 
-  if (allFavorites.length === 0) {
+  if (state.exercises.length === 0) {
     await renderEmptyState(container);
-    renderPagination(1, 1, 'favorites-pagination');
+    if (paginationContainer) {
+      paginationContainer.innerHTML = '';
+    }
     return;
   }
 
   const perPage = getPerPage();
   const shouldPaginate = usePagination();
-  const totalPages = shouldPaginate ? Math.ceil(allFavorites.length / perPage) : 1;
+  const totalPages = shouldPaginate ? Math.ceil(state.exercises.length / perPage) : 1;
 
   if (state.page > totalPages) {
     state.page = totalPages;
   }
 
   const startIndex = shouldPaginate ? (state.page - 1) * perPage : 0;
-  const endIndex = shouldPaginate ? startIndex + perPage : allFavorites.length;
-  const favorites = allFavorites.slice(startIndex, endIndex);
+  const endIndex = shouldPaginate ? startIndex + perPage : state.exercises.length;
+  const favorites = state.exercises.slice(startIndex, endIndex);
 
   const cardTemplate = await loadTemplate('exercise-card');
 
@@ -83,6 +112,8 @@ async function renderFavorites() {
 
   if (shouldPaginate) {
     renderPagination(state.page, totalPages, 'favorites-pagination');
+  } else if (paginationContainer) {
+    paginationContainer.innerHTML = '';
   }
 }
 
@@ -128,6 +159,8 @@ function setupEventHandlers() {
       const exerciseId = deleteBtn.dataset.id;
       if (exerciseId) {
         removeFavorite(exerciseId);
+        // Remove from cached state
+        state.exercises = state.exercises.filter(ex => ex._id !== exerciseId);
         await renderFavorites();
       }
       return;
@@ -142,7 +175,10 @@ function setupEventHandlers() {
 
       await openExerciseModal(exerciseId, {
         isFavoritesPage: true,
-        onRemoveFavorite: () => renderFavorites(),
+        onRemoveFavorite: async () => {
+          state.exercises = state.exercises.filter(ex => ex._id !== exerciseId);
+          await renderFavorites();
+        },
       });
     }
   });
@@ -166,6 +202,7 @@ export function initFavoritesPage() {
   runAfterLoad(async () => {
     try {
       await initQuote();
+      await fetchFavoritesData();
       await renderFavorites();
     } catch (err) {
       console.error('Error initializing favorites page:', err);

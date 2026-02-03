@@ -4,7 +4,8 @@
 }
 
 /* Favorites Content Layout */
-.favorites-content {
+
+.favorites-content > .container {
   display: flex;
   flex-direction: column;
 }

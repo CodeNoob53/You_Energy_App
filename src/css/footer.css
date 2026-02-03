@@ -4,7 +4,7 @@
   flex-direction: column;
   background-color: var(--color-dark);
   color: var(--color-light);
-  padding: 40px 20px 10px;
+  padding: 40px 0 10px;
 }
 
 .footer-logo .logo-svg {
@@ -17,7 +17,7 @@
 .footer-socials {
   display: flex;
   gap: var(--gap-12);
-  margin: 20px 0;
+  margin: 20px 0 0 0;
   list-style: none;
   padding: 0;
   margin-left: 0;
@@ -94,7 +94,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  padding-top: 120px;
+  margin-top: 120px;
   gap: 10px;
 }
 

@@ -1,7 +1,7 @@
 import { initHomePage } from './js/home.js';
 import { initFavoritesPage } from './js/favorites.js';
 import { subscribe } from './js/api.js';
-import { toast } from './js/toast.js';
+import { notify } from './js/notify.js';
 import './js/nav.js';
 
 function setActiveNav() {
@@ -43,7 +43,7 @@ function setupSubscription() {
       const email = subForm.email.value;
       try {
         await subscribe(email);
-        toast.success('Successfully subscribed!');
+        notify.success('Successfully subscribed!');
         subForm.reset();
       } catch (err) {
         // Error toast is shown by API interceptor

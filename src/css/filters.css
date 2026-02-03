@@ -1,6 +1,6 @@
 /* Filters Section */
 .filters-section {
-  margin-bottom: 20px;
+  padding: 20px 0 20px 0;
 }
 
 .filters-header {
@@ -21,7 +21,7 @@
 }
 
 .section-title .category-name {
-  color: var(--color-light-65);
+  color: rgba(36, 36, 36, 0.5);
 }
 
 .filters-controls {
@@ -91,7 +91,7 @@
 }
 
 .exercise-search-input::placeholder {
-  color: var(--color-light-65);
+  color: rgba(36, 36, 36, 1);
 }
 
 .exercise-search-input:focus {

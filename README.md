@@ -78,21 +78,23 @@ You_Energy_App/
 │   │   ├── quote.css           # Quote widget
 │   │   ├── sidebar.css         # Sidebar styles
 │   │   ├── skeleton.css        # Loading skeletons
+│   │   ├── notify.css          # Notification styles
 │   │   ├── responsive.css      # Media queries
 │   │   └── main.css            # Entry point (imports)
 │   │
 │   ├── js/                     # JavaScript modules
 │   │   ├── api.js              # Axios instance & API calls
+│   │   ├── constants.js        # App constants & configuration
 │   │   ├── dom.js              # DOM utilities & rendering
 │   │   ├── exercise-controller.js # Exercise modal & rating orchestration
-│   │   ├── favorites-service.js # Favorites business logic (LocalStorage)
-│   │   ├── favorites.js        # Favorites page entry point
+│   │   ├── favorites-service.js # Favorites storage (IDs only in LocalStorage)
+│   │   ├── favorites.js        # Favorites page (fetches data from API)
 │   │   ├── home.js             # Home page entry point
 │   │   ├── modal.js            # Base modal management
 │   │   ├── nav.js              # Navigation & mobile menu
+│   │   ├── notify.js           # Notification system (iziToast wrapper)
 │   │   ├── pagination.js       # Pagination logic
-│   │   ├── quote.js            # Daily quote logic
-│   │   └── toast.js            # Notification wrapper
+│   │   └── quote.js            # Daily quote logic
 │   │
 │   ├── partials/               # HTML components
 │   │   ├── header.html         # Site header
@@ -159,7 +161,8 @@ CSS-based skeleton screens displayed during data fetching for improved perceived
 
 ### State Management
 - URL-based state for filters and pagination
-- LocalStorage for favorites persistence
+- LocalStorage stores only exercise IDs for favorites (not full objects)
+- Favorites data fetched fresh from API on page load for up-to-date info
 - No external state libraries
 
 ---

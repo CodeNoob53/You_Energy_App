@@ -1,10 +1,10 @@
 // Favorites Service - localStorage operations
-// НЕ працює з DOM, тільки зберігає/читає дані
+// Зберігає тільки ID вправ, дані завантажуються з API
 
 import { STORAGE_KEYS } from './constants.js';
 
-// Get all favorites from localStorage
-export function getFavorites() {
+// Get all favorite IDs from localStorage
+export function getFavoriteIds() {
   try {
     const favorites = localStorage.getItem(STORAGE_KEYS.FAVORITES);
     return favorites ? JSON.parse(favorites) : [];
@@ -14,16 +14,16 @@ export function getFavorites() {
   }
 }
 
-// Add exercise to favorites
-export function addFavorite(exercise) {
+// Add exercise ID to favorites
+export function addFavorite(exerciseId) {
   try {
-    const favorites = getFavorites();
+    const favorites = getFavoriteIds();
 
-    if (favorites.some(fav => fav._id === exercise._id)) {
+    if (favorites.includes(exerciseId)) {
       return false;
     }
 
-    favorites.push(exercise);
+    favorites.push(exerciseId);
     localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(favorites));
     return true;
   } catch (err) {
@@ -32,11 +32,11 @@ export function addFavorite(exercise) {
   }
 }
 
-// Remove exercise from favorites
+// Remove exercise ID from favorites
 export function removeFavorite(exerciseId) {
   try {
-    const favorites = getFavorites();
-    const filtered = favorites.filter(fav => fav._id !== exerciseId);
+    const favorites = getFavoriteIds();
+    const filtered = favorites.filter(id => id !== exerciseId);
     localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(filtered));
     return true;
   } catch (err) {
@@ -47,15 +47,15 @@ export function removeFavorite(exerciseId) {
 
 // Check if exercise is in favorites
 export function isFavorite(exerciseId) {
-  const favorites = getFavorites();
-  return favorites.some(fav => fav._id === exerciseId);
+  const favorites = getFavoriteIds();
+  return favorites.includes(exerciseId);
 }
 
 // Toggle favorite status
-export function toggleFavorite(exercise) {
-  if (isFavorite(exercise._id)) {
-    return removeFavorite(exercise._id);
+export function toggleFavorite(exerciseId) {
+  if (isFavorite(exerciseId)) {
+    return removeFavorite(exerciseId);
   } else {
-    return addFavorite(exercise);
+    return addFavorite(exerciseId);
   }
 }
