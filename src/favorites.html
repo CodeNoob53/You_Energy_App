@@ -41,10 +41,10 @@
 
       <div class="favorites-content">
         <div class="container">
-          <div class="favorites-sidebar" aria-label="Additional information">
+          <aside class="favorites-sidebar" aria-label="Additional information">
             <load src="partials/quote.html" />
-            <article class="favorites-info-card">
-              <header class="favorites-info-header">
+            <div class="favorites-info-card">
+              <div class="favorites-info-header">
                 <span class="favorites-info-icon" aria-hidden="true">
                   <svg width="20" height="20">
                     <use href="#icon-info"></use>
@@ -54,8 +54,8 @@
                   <p class="favorites-info-value">110 min</p>
                   <p class="favorites-info-label">Daily norm of sports</p>
                 </div>
-              </header>
-            </article>
+              </div>
+            </div>
             <div class="favorites-image-card" aria-hidden="true">
               <picture>
                 <source
@@ -119,12 +119,12 @@
                   width="335"
                   height="571"
                   loading="lazy"
-                />
+                >
               </picture>
             </div>
-          </div>
+          </aside>
 
-          <section class="favorites-main" aria-labelledby="favorites-heading">
+          <div class="favorites-main">
             <ul
               id="favorites-container"
               class="favorites-list"
@@ -136,7 +136,7 @@
               class="favorites-pagination"
               aria-label="Favorites pagination"
             ></nav>
-          </section>
+          </div>
         </div>
       </div>
     </main>

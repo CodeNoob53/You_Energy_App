@@ -1,3 +1,15 @@
+/* Position notyf container as popover in top layer */
+.notyf[popover] {
+  inset: unset !important;
+  top: 0 !important;
+  right: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
 .notyf__toast {
   border-radius: 30px !important;
   border: 1px solid var(--color-light-30) !important;

@@ -43,7 +43,7 @@ function setupExerciseModalHandlers(exerciseId, options = {}) {
   const giveRatingBtn = document.getElementById('give-rating-btn');
   if (giveRatingBtn) {
     giveRatingBtn.onclick = () => {
-      showRatingModal();
+      showRatingModal(exerciseId);
       setupRatingModalHandlers(exerciseId);
     };
   }
@@ -115,7 +115,7 @@ function setupRatingModalHandlers(exerciseId) {
         notify.success('Rating submitted successfully!');
       } catch (err) {
         if (err.response?.status === 409) {
-          notify.error('You have already rated this exercise with this email.');
+          notify.error('You have already rated this exercise.');
         } else {
           notify.error('Failed to submit rating. Please try again.');
         }

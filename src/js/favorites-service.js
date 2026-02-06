@@ -3,11 +3,30 @@
 
 import { STORAGE_KEYS } from './constants.js';
 
+// Migrate old format (objects) to new format (IDs only)
+function migrateOldFormat(data) {
+  if (!Array.isArray(data) || data.length === 0) return data;
+
+  // Check if first item is an object (old format)
+  if (typeof data[0] === 'object' && data[0]._id) {
+    // Extract IDs from objects
+    const ids = data.map(item => item._id).filter(Boolean);
+    // Save migrated data
+    localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(ids));
+    return ids;
+  }
+
+  return data;
+}
+
 // Get all favorite IDs from localStorage
 export function getFavoriteIds() {
   try {
     const favorites = localStorage.getItem(STORAGE_KEYS.FAVORITES);
-    return favorites ? JSON.parse(favorites) : [];
+    if (!favorites) return [];
+
+    const parsed = JSON.parse(favorites);
+    return migrateOldFormat(parsed);
   } catch (err) {
     console.error('Failed to get favorites:', err);
     return [];

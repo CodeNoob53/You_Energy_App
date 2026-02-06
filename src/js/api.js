@@ -31,6 +31,12 @@ api.interceptors.response.use(
     }
 
     const status = error.response.status;
+
+    // Skip notification for 409 - handled specifically in controllers
+    if (status === 409) {
+      return Promise.reject(error);
+    }
+
     const serverMessage = error.response.data?.message;
     const message = serverMessage || errorMessages[status] || errorMessages.default;
 

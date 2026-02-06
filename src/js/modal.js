@@ -3,15 +3,24 @@ export const openModal = modalId => {
   const modal = document.getElementById(modalId);
   if (modal) {
     modal.showModal();
-    // No need to manually manage focus or aria-hidden with dialog
-    
+
     // Add backdrop click listener if not already attached
+    // Use mousedown + click to prevent closing when selecting text
     if (modal.dataset.backdropListener !== 'true') {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+      let mouseDownTarget = null;
+
+      modal.addEventListener('mousedown', e => {
+        mouseDownTarget = e.target;
+      });
+
+      modal.addEventListener('click', e => {
+        // Only close if both mousedown and click happened on the backdrop
+        if (e.target === modal && mouseDownTarget === modal) {
           modal.close();
         }
+        mouseDownTarget = null;
       });
+
       modal.dataset.backdropListener = 'true';
     }
   }
@@ -91,14 +100,29 @@ export const renderExerciseModal = exercise => {
   }
 };
 
-// Show rating modal
-export const showRatingModal = () => {
-  closeModal('exercise-modal');
+// Store exerciseId when opening rating modal to reopen exercise modal later
+let currentExerciseIdForRating = null;
+
+// Show rating modal (close exercise modal, reopen it when rating closes)
+export const showRatingModal = exerciseId => {
   const ratingModal = document.getElementById('rating-modal');
 
-  // Add close event listener once to reset form when modal closes (any method)
+  // Store exerciseId to reopen exercise modal later
+  currentExerciseIdForRating = exerciseId;
+
+  // Close exercise modal first
+  closeModal('exercise-modal');
+
+  // Add close event listener once to reset form and reopen exercise modal
   if (ratingModal && ratingModal.dataset.closeListener !== 'true') {
-    ratingModal.addEventListener('close', resetRatingForm);
+    ratingModal.addEventListener('close', () => {
+      resetRatingForm();
+      // Reopen exercise modal with stored ID
+      if (currentExerciseIdForRating) {
+        reopenExerciseModal(currentExerciseIdForRating);
+        currentExerciseIdForRating = null;
+      }
+    });
     ratingModal.dataset.closeListener = 'true';
   }
 
@@ -107,7 +131,12 @@ export const showRatingModal = () => {
   initRatingStars();
 };
 
-// Hide rating modal and return to main screen
+// Reopen exercise modal without fetching data again (it's already in DOM)
+const reopenExerciseModal = () => {
+  openModal('exercise-modal');
+};
+
+// Hide rating modal and return to exercise modal
 export const hideRatingModal = () => {
   closeModal('rating-modal');
 };

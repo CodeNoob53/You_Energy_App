@@ -25,13 +25,37 @@ const notyf = new Notyf({
   ],
 });
 
+// Promote notyf container to top layer using popover API
+function promoteToTopLayer() {
+  const notyfContainer = document.querySelector('.notyf');
+  if (!notyfContainer) return;
+
+  // Add popover attribute if not present
+  if (!notyfContainer.hasAttribute('popover')) {
+    notyfContainer.setAttribute('popover', 'manual');
+  }
+
+  // Re-show popover to promote it to top of the top layer
+  // This ensures it appears above any open dialogs
+  try {
+    if (notyfContainer.matches(':popover-open')) {
+      notyfContainer.hidePopover();
+    }
+    notyfContainer.showPopover();
+  } catch {
+    // Fallback if popover API not supported
+  }
+}
+
 export const notify = {
   success(message) {
     notyf.success(message);
+    promoteToTopLayer();
   },
 
   error(message) {
     notyf.error(message);
+    promoteToTopLayer();
   },
 
   warning(message) {
@@ -39,6 +63,7 @@ export const notify = {
       type: 'warning',
       message,
     });
+    promoteToTopLayer();
   },
 
   info(message) {
@@ -46,5 +71,6 @@ export const notify = {
       type: 'info',
       message,
     });
+    promoteToTopLayer();
   },
 };
